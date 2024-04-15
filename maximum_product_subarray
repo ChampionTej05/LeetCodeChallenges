@@ -1,0 +1,99 @@
+def maxProduct( nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    """
+    We need to maintain maximum and minimum product at each step 
+
+    maxSoFar = max(current, current*maxSoFar, current*minSoFar)
+    minSoFar = min(current, current*maxSoFar, current*minSoFar)
+
+    return max(maxSoFar, minSoFar)
+    """
+    import sys
+
+    if len(nums) <=1:
+        return nums[0]
+    minProductSoFar = nums[0]
+    maxProductSoFar = nums[0]
+    globalMaxProduct = nums[0]
+
+    for i in range(1, len(nums)):
+        temp = max( nums[i], nums[i]*maxProductSoFar, nums[i]*minProductSoFar)
+        minProductSoFar = min( nums[i], nums[i]*maxProductSoFar, nums[i]*minProductSoFar)
+        maxProductSoFar = temp
+        globalMaxProduct = max(globalMaxProduct, maxProductSoFar)
+        print("Element : {}, Max: {} , Min:{}, Global : {}".format(nums[i], maxProductSoFar, minProductSoFar, globalMaxProduct))
+
+    return globalMaxProduct
+
+
+
+
+def maxProductV1(nums):
+    if not nums:
+        return 0
+
+    maxProduct = minProduct = result = nums[0]
+
+    for i in range(1, len(nums)):
+        tempMax = max(nums[i], maxProduct * nums[i], minProduct * nums[i])
+        minProduct = min(nums[i], maxProduct * nums[i], minProduct * nums[i])
+
+        maxProduct = tempMax
+        result = max(result, maxProduct)
+
+    return result
+
+def maxProductV2(self, nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+
+        
+    result = max(nums) # default value will be maximum number in the array 
+    
+    max_so_far, min_so_far = 1,1
+    
+    for i in range(len(nums)):
+        ele = nums[i]
+        if ele ==0:
+            #reset values
+            max_so_far, min_so_far = 1,1
+            continue
+        
+        #even ele can be maximum 
+        '''
+        consider the array of [-1,8]
+        after using -1, Max=-1, Min=-1
+        now eq will be max_so_far=max(-1*8,-1*8,8)
+        in this ele is greatest number 
+        '''
+        temp_max_so_far = ele*max_so_far
+        max_so_far = max(temp_max_so_far, ele*min_so_far, ele) # [-1,8]
+        min_so_far = min(temp_max_so_far, ele*min_so_far,ele) # [-1,-8]
+        
+        result = max(result, max_so_far, min_so_far)
+        
+    return result
+
+
+# nums = [2,3,0,-2,-3,-5,-6]
+nums = [-2,0,-1]
+# nums = [2,-3,2,-4]
+# nums = [2,-3,-1,-4, 30]
+print(maxProductV1(nums))
+'''
+
+E   Mx  Mn  G
+2   2   2   2
+-3  -3  -6  2
+-1  6   -1  6
+-4  4  -24  6
+30  120  -720 120
+
+
+(6, -4, -24, 24) 
+'''
